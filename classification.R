@@ -1,5 +1,6 @@
 # create train and test sets using the caret package
 # split 65% and 35%
+library(caret)
 set.seed(17)
 in_train = createDataPartition(y=data_fcbf$Class, p=.65, list=FALSE) # randomly samples the data (default) and returns the indexes 
 train = data_fcbf[in_train,]
@@ -45,4 +46,12 @@ eval_svm(svm_fit_4)
 eval_svm(svm_fit_5)
 # models 1 and 5 have the highest precision (1 error)
 
+# this package also has a function for testing different parameters using cross validation
+# tune() uses 10-fold CV
+# try using RBF kernel
+tune_output = tune(svm, Class~., data= train, kernel = "radial", 
+                   ranges=list(cost=c(1,5,10,100), gamma=c(.001,.01,.1,1)))
+
+summary(tune_output)
+# the smallest error is found with gamma=.001 and c= 1, 5, and 10
   
